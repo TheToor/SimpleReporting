@@ -13,7 +13,7 @@ namespace MonitoringService.Modules
                 return 200;
             };
 
-            Get["enableFullscreen/{client:id}"] = parameters =>
+            Get["enableFullscreen/{client:int}"] = parameters =>
             {
                 var client = (int)parameters.client;
                 Program.Service.Request(client, ReportingClient.GetEnableFullscreenUrl());
@@ -26,7 +26,7 @@ namespace MonitoringService.Modules
                 return 200;
             };
 
-            Get["disableFullscreen/{client:id}"] = parameters =>
+            Get["disableFullscreen/{client:int}"] = parameters =>
             {
                 var client = (int)parameters.client;
                 Program.Service.Request(client, ReportingClient.GetDisableFullscreenUrl());
@@ -39,7 +39,7 @@ namespace MonitoringService.Modules
                 return 200;
             };
 
-            Get["toggleFullscreen/{client:id}"] = parameters =>
+            Get["toggleFullscreen/{client:int}"] = parameters =>
             {
                 var client = (int)parameters.client;
                 Program.Service.Request(client, ReportingClient.GetToggleFullscreenUrl());

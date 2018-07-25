@@ -14,7 +14,7 @@ namespace MonitoringService.Modules
                 return 200;
             };
 
-            Get["{id:int}/{client:id}"] = parameters =>
+            Get["{id:int}/{client:int}"] = parameters =>
             {
                 var tabId = (int)parameters.id;
                 var client = (int)parameters.client;

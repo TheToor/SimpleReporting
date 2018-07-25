@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace MonitoringService
 {
@@ -104,7 +105,7 @@ namespace MonitoringService
 
         internal void Request(int id, string request)
         {
-            if (id < 0 || id > clients.Count)
+            if (id < 0 || id >= clients.Count)
                 return;
 
             Request(clients[id], request);
@@ -119,6 +120,9 @@ namespace MonitoringService
                 {
                     Method = HttpMethod.Get,
                     RequestUri = new Uri($"{client.FQDN}/{request}")
+                }).ContinueWith(delegate(Task<HttpResponseMessage> response)
+                {
+                    httpClient.Dispose();
                 });
             }
             catch (Exception ex)
