@@ -108,6 +108,9 @@ namespace MonitoringService
             if (id < 0 || id >= clients.Count)
                 return;
 
+            if (!clients.ContainsKey(id))
+                return;
+
             Request(clients[id], request);
         }
 
