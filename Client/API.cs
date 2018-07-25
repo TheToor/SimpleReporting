@@ -1,15 +1,21 @@
-﻿using Nancy.Hosting.Self;
+﻿using Client.Models;
+using Nancy.Hosting.Self;
 using System;
 
 namespace Client
 {
     internal class API : IDisposable
     {
+        internal static string BindAddress;
+
         private NancyHost _host;
 
-        internal API()
+        internal API(Settings settings)
         {
-            _host = new NancyHost(new Uri("http://localhost:9000/"));
+            BindAddress = $"{settings.BindHost.Replace("http://", "").Replace("www.", "")}:{settings.BindPort}";
+            var uri = new Uri($"http://{BindAddress}/");
+
+            _host = new NancyHost(uri);
             _host.Start();
         }
 

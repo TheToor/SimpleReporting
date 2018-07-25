@@ -8,6 +8,15 @@ namespace Client.Models
     [XmlRoot("Settings")]
     public class Settings
     {
+        [XmlElement("UniqueId")]
+        public int UniqueId { get; set; } = -1;
+        [XmlElement("AnnounceUrl")]
+        public string AnnounceUrl { get; set; }
+        [XmlElement("BindHost")]
+        public string BindHost { get; set; }
+        [XmlElement("BindPort")]
+        public int BindPort { get; set; }
+
         [XmlElement("PageSwitchTime")]
         public int PageSwitchTime { get; set; }
         [XmlElement("TopMost")]
