@@ -10,7 +10,7 @@ namespace MonitoringService.Modules
             Get["{id:int}"] = parameters =>
             {
                 var tabId = (int)parameters.Id;
-                Program.Service.BroadCastRequest(ReportingClient.GetTabUrl(tabId));
+                Program.Service.BroadcastRequest(ReportingClient.GetTabUrl(tabId));
                 return 200;
             };
 
@@ -24,7 +24,7 @@ namespace MonitoringService.Modules
 
             Get["next"] = _ =>
             {
-                Program.Service.BroadCastRequest(ReportingClient.GetTabNextUrl());
+                Program.Service.BroadcastRequest(ReportingClient.GetTabNextUrl());
                 return 200;
             };
             
@@ -37,7 +37,7 @@ namespace MonitoringService.Modules
 
             Get["prev"] = _ =>
             {
-                Program.Service.BroadCastRequest(ReportingClient.GetTabPreviousUrl());
+                Program.Service.BroadcastRequest(ReportingClient.GetTabPreviousUrl());
                 return 200;
             };
 

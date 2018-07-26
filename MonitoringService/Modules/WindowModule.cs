@@ -9,7 +9,7 @@ namespace MonitoringService.Modules
         {
             Get["enableFullscreen"] = _ =>
             {
-                Program.Service.BroadCastRequest(ReportingClient.GetEnableFullscreenUrl());
+                Program.Service.BroadcastRequest(ReportingClient.GetEnableFullscreenUrl());
                 return 200;
             };
 
@@ -22,7 +22,7 @@ namespace MonitoringService.Modules
 
             Get["disableFullscreen"] = _ =>
             {
-                Program.Service.BroadCastRequest(ReportingClient.GetDisableFullscreenUrl());
+                Program.Service.BroadcastRequest(ReportingClient.GetDisableFullscreenUrl());
                 return 200;
             };
 
@@ -35,7 +35,7 @@ namespace MonitoringService.Modules
 
             Get["toggleFullscreen"] = _ =>
             {
-                Program.Service.BroadCastRequest(ReportingClient.GetToggleFullscreenUrl());
+                Program.Service.BroadcastRequest(ReportingClient.GetToggleFullscreenUrl());
                 return 200;
             };
 

@@ -95,7 +95,7 @@ namespace MonitoringService
             Console.WriteLine($"Added [{id}]{url} to monitoring");
         }
 
-        internal void BroadCastRequest(string request)
+        internal void BroadcastRequest(string request)
         {
             foreach(var client in clients.Values)
             {
@@ -105,7 +105,7 @@ namespace MonitoringService
 
         internal void Request(int id, string request)
         {
-            if (id < 0 || id >= clients.Count)
+            if (id < 0 || id > clients.Count)
                 return;
 
             if (!clients.ContainsKey(id))
