@@ -130,7 +130,7 @@ namespace MonitoringService
 
         internal void Request(int id, string request)
         {
-            if (id < 0 || id > _clients.Count)
+            if (id < 0)
                 return;
 
             if (!_clients.ContainsKey(id))
