@@ -12,7 +12,9 @@ namespace MonitoringService
     internal class MonitoringService : IDisposable
     {
         private NancyHost _host;
-        private Dictionary<int, ReportingClient> clients = new Dictionary<int, ReportingClient>();
+        private Dictionary<int, ReportingClient> _clients = new Dictionary<int, ReportingClient>();
+
+        internal List<ReportingClient> GetClients() => _clients.Select(c => c.Value).ToList();
 
         private Thread _threadLoop;
 
@@ -43,12 +45,12 @@ namespace MonitoringService
 #else
                     Thread.Sleep(1000 * 30);
 #endif
-                    if (clients.Count == 0)
+                    if (_clients.Count == 0)
                         continue;
 
-                    Console.WriteLine($"Updating status of {clients.Count} servers...");
+                    Console.WriteLine($"Updating status of {_clients.Count} servers...");
 
-                    foreach(var client in clients.Values.ToList())
+                    foreach(var client in _clients.Values.ToList())
                     {
                         try
                         {
@@ -61,7 +63,7 @@ namespace MonitoringService
                             Console.WriteLine($"Failed to contact {client.UniqueId}");
                             Console.WriteLine(ex);
 
-                            clients.Remove(client.UniqueId);
+                            _clients.Remove(client.UniqueId);
                         }
                     }
 
@@ -75,29 +77,52 @@ namespace MonitoringService
             }
         }
 
-        internal void AddClient(int id, string url)
+        internal async void AddClient(int id, string url)
         {
-            if(clients.ContainsKey(id))
+            if(_clients.ContainsKey(id))
             {
-                var client = clients[id];
+                var client = _clients[id];
                 if (client.BindAddress == url)
                     return;
 
-                clients.Remove(id);
+                _clients.Remove(id);
             }
 
-            clients.Add(id, new ReportingClient()
+            var reportingClient = new ReportingClient()
             {
                 BindAddress = url,
                 UniqueId = id
-            });
+            };
 
-            Console.WriteLine($"Added [{id}]{url} to monitoring");
+            try
+            {
+                var httpClient = new HttpClient();
+                var version = await httpClient.GetStringAsync(reportingClient.VersionUrl);
+
+                if (String.IsNullOrEmpty(version))
+                    throw new Exception("Invalid version");
+
+                if (!Version.TryParse(version, out var parsedVersion))
+                    throw new Exception("Invalid version");
+
+                reportingClient.Version = parsedVersion;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"Failed to add [{id}]{url}");
+                Console.WriteLine(ex);
+
+                return;
+            }
+
+            _clients.Add(id, reportingClient);
+
+            Console.WriteLine($"Added [{id}]{url} in version {reportingClient.Version} to monitoring");
         }
 
         internal void BroadcastRequest(string request)
         {
-            foreach(var client in clients.Values)
+            foreach(var client in _clients.Values)
             {
                 Request(client, request);
             }
@@ -105,13 +130,13 @@ namespace MonitoringService
 
         internal void Request(int id, string request)
         {
-            if (id < 0 || id > clients.Count)
+            if (id < 0 || id > _clients.Count)
                 return;
 
-            if (!clients.ContainsKey(id))
+            if (!_clients.ContainsKey(id))
                 return;
 
-            Request(clients[id], request);
+            Request(_clients[id], request);
         }
 
         internal void Request(ReportingClient client, string request)
