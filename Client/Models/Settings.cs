@@ -21,6 +21,8 @@ namespace Client.Models
         public int PageSwitchTime { get; set; }
         [XmlElement("TopMost")]
         public bool TopMost { get; set; }
+        [XmlElement("DisableScreenSaver")]
+        public bool DisableScreenSaver { get; set; } = true;
 
         [XmlElement("Proxy")]
         public ProxySettings Proxy { get; set; }

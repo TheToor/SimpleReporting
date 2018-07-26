@@ -3,6 +3,7 @@ using Client.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Timers;
 using System.Windows;
 using System.Xml;
@@ -22,6 +23,16 @@ namespace Client
         private MainWindow _form;
 
         private AnnounceService _announceService;
+
+        internal enum EXECUTION_STATE : uint
+        {
+            ES_CONTINUOUS = 0x80000000,
+            ES_SYSTEM_REQUIRED = 0x00000001,
+            ES_DISPLAY_REQUIRED = 0x00000002
+        }
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        internal static extern uint SetThreadExecutionState([In] uint esFlags);
 
         internal void EnableFullScreen() => _form.EnableFullScreen();
         internal void DisableFullScreen() => _form.DisableFullScreen();
@@ -44,6 +55,9 @@ namespace Client
                 CreatePageSwitchTimer();
                 _pageSwitchTimer.Start();
             }
+
+            if(_settings.DisableScreenSaver)
+                SetThreadExecutionState((uint)(EXECUTION_STATE.ES_CONTINUOUS | EXECUTION_STATE.ES_DISPLAY_REQUIRED | EXECUTION_STATE.ES_SYSTEM_REQUIRED));
 
             LoadTabs();
 
