@@ -98,6 +98,7 @@ namespace MonitoringService
             {
                 var httpClient = new HttpClient();
                 var version = await httpClient.GetStringAsync(reportingClient.VersionUrl);
+                httpClient.Dispose();
 
                 if (String.IsNullOrEmpty(version))
                     throw new Exception("Invalid version");
