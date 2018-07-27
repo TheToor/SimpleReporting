@@ -88,7 +88,7 @@ namespace Client
                     {
                         ProxyPassword = "",
                         ProxyPort = 0,
-                        ProxyUrl = "",
+                        ProxyUrl = "auto",
                         ProxyUser = ""
                     },
                     Urls = new List<UrlSettings>()
@@ -97,7 +97,13 @@ namespace Client
                         {
                             Url = "www.example.com"
                         }
-                    }
+                    },
+                    BindHost = "localhost",
+                    BindPort = 9000,
+                    DisableScreenSaver = true,
+                    PageSwitchTime = 30,
+                    TopMost = true,
+                    UniqueId = new Random().Next(1, int.MaxValue)
                 };
 
                 SaveSettings();
