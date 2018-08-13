@@ -45,7 +45,19 @@ namespace Client
             ReadSettings();
 
             _browserWrapper = new BrowserWrapper(mainWindow, _settings);
-            _api = new API(_settings);
+
+            if (!App.DisableAPI)
+            {
+                try
+                {
+                    _api = new API(_settings);
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                    Environment.Exit(0);
+                }
+            }
 
             if (_settings.TopMost)
                 mainWindow.Topmost = true;

@@ -23,6 +23,8 @@ namespace Client.Models
         public string SubmitElement { get; set; }
         [XmlElement("Timeout")]
         public int Timeout { get; set; }
+        [XmlElement("Delay")]
+        public int Delay { get; set; }
 
         internal bool Authentificated { get; set; }
     }

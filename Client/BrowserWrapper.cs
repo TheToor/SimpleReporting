@@ -166,11 +166,14 @@ namespace Client
             });
         }
 
-        private void OnBrowserInitialized(object sender, DependencyPropertyChangedEventArgs e)
+        private async void OnBrowserInitialized(object sender, DependencyPropertyChangedEventArgs e)
         {
             var browser = (ChromiumWebBrowser)sender;
             var id = Convert.ToInt32(browser.Uid);
             var settings = _browserSettings[id];
+
+            if (settings.Delay > 0)
+                await Task.Delay(settings.Delay * 1000);
 
             browser.Load(settings.Url);
         }

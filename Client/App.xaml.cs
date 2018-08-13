@@ -11,6 +11,7 @@ namespace Client
     {
         internal static bool StartFullScreen = false;
         internal static bool DisableFullScreenExit = false;
+        internal static bool DisableAPI = false;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -18,7 +19,7 @@ namespace Client
 
             if(arguments.Contains("--help") || arguments.Contains("-h"))
             {
-                MessageBox.Show("Command Line Arguments:\n--help or -h\n--fullscreen or -f \n--disable-fullscreen-exit or -dfe");
+                MessageBox.Show("Command Line Arguments:\n--help or -h\n--fullscreen or -f \n--disable-fullscreen-exit or -dfe\n--no-api or -na");
                 Environment.Exit(0);
             }
 
@@ -27,6 +28,9 @@ namespace Client
 
             if (arguments.Contains("--disable-fullscreen-exit") || arguments.Contains("-dfe"))
                 DisableFullScreenExit = true;
+
+            if (arguments.Contains("--no-api") || arguments.Contains("-na"))
+                DisableAPI = true;
         }
     }
 }
