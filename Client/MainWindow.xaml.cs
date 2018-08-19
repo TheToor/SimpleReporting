@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 
-namespace Client
+namespace Reporting.Client
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

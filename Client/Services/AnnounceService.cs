@@ -1,10 +1,10 @@
-﻿using Client.Models;
-using Client.Modules;
+﻿using Reporting.Client.Models;
+using Reporting.Client.Modules;
 using System;
 using System.Net.Http;
 using System.Timers;
 
-namespace Client.Services
+namespace Reporting.Client.Services
 {
     internal class AnnounceService
     {

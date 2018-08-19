@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml.Serialization;
 
-namespace Client.Models
+namespace Reporting.Client.Models
 {
     [Serializable()]
     public class UrlSettings

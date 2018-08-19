@@ -1,5 +1,5 @@
-﻿using Client.Models;
-using Client.Services;
+﻿using Reporting.Client.Models;
+using Reporting.Client.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +9,7 @@ using System.Windows;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace Client
+namespace Reporting.Client
 {
     internal class ClientApp : IDisposable
     {

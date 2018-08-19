@@ -1,4 +1,4 @@
-﻿using MonitoringService.Models;
+﻿using Reporting.Service.Models;
 using Nancy.Hosting.Self;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MonitoringService
+namespace Reporting.Service
 {
     internal class MonitoringService : IDisposable
     {

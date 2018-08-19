@@ -1,8 +1,8 @@
-﻿using Client.Models;
+﻿using Reporting.Client.Models;
 using Nancy.Hosting.Self;
 using System;
 
-namespace Client
+namespace Reporting.Client
 {
     internal class API : IDisposable
     {

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Windows;
 
-namespace Client
+namespace Reporting.Client
 {
     /// <summary>
     /// Interaction logic for App.xaml

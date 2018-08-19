@@ -1,7 +1,7 @@
-﻿using MonitoringService.Models;
+﻿using Reporting.Service.Models;
 using Nancy;
 
-namespace MonitoringService.Modules
+namespace Reporting.Service.Modules
 {
     public class TabModule : NancyModule
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MonitoringService
+namespace Reporting.Service
 {
     class Program
     {

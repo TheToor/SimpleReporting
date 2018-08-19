@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MonitoringService.Models
+namespace Reporting.Service.Models
 {
     public class ReportingClient
     {

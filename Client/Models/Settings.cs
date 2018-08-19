@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace Client.Models
+namespace Reporting.Client.Models
 {
     [Serializable()]
     [XmlRoot("Settings")]

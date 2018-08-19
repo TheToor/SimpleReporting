@@ -2,7 +2,7 @@
 using System;
 using System.Reflection;
 
-namespace Client.Modules
+namespace Reporting.Client.Modules
 {
     public class StatusModule : NancyModule
     {

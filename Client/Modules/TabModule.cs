@@ -1,6 +1,6 @@
 ﻿using Nancy;
 
-namespace Client.Modules
+namespace Reporting.Client.Modules
 {
     public class TabModule : NancyModule
     {

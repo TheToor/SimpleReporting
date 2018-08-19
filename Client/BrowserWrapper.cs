@@ -1,13 +1,13 @@
 ﻿using CefSharp;
 using CefSharp.Wpf;
-using Client.Models;
+using Reporting.Client.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Client
+namespace Reporting.Client
 {
     internal class BrowserWrapper : IDisposable
     {
