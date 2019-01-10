@@ -143,7 +143,6 @@ namespace Reporting.Client
             {
                 MessageBox.Show("UniqueID cannot be -1!");
                 Environment.Exit(0);
-                return;
             }
         }
 
