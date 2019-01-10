@@ -126,9 +126,17 @@ namespace Reporting.Client
 
             var serializer = new XmlSerializer(typeof(Settings));
 
-            using (var reader = new StreamReader("settings.xml"))
+            try
             {
-                _settings = (Settings)serializer.Deserialize(reader);
+                using (var reader = new StreamReader("settings.xml"))
+                {
+                    _settings = (Settings)serializer.Deserialize(reader);
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show($"Error while reading settings: {ex}");
+                Environment.Exit(-1);
             }
 
             if (_settings.UniqueId == -1)
