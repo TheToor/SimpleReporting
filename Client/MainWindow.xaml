@@ -8,6 +8,11 @@
         Title="Reporting Client" Height="450" Width="800"
         Unloaded="OnWindowUnloaded"
         KeyUp="OnKeyUp">
-    <Grid x:Name="RootGrid"> 
+    <Grid x:Name="RootGrid" Margin="0,0,0,0">
+        <Canvas VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Panel.ZIndex="99999">
+            <Grid x:Name="HelpGrid" HorizontalAlignment="Stretch" Background="DarkGray" Visibility="Hidden" Canvas.Left="0" Canvas.Bottom="0">
+                <Label Foreground="White" Content="F1: Prev | F2: Next | F3: Toggle pause | F11: Toggle fullscreen" FontSize="25" HorizontalContentAlignment="Center"/>
+            </Grid>
+        </Canvas>
     </Grid>
 </Window>

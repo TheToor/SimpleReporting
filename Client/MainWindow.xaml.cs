@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Timers;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Reporting.Client
@@ -11,6 +13,7 @@ namespace Reporting.Client
         internal static ClientApp Client;
 
         private WindowState _fullScreenWindowState;
+        private Timer _helpTimer;
 
         public MainWindow()
         {
@@ -102,7 +105,30 @@ namespace Reporting.Client
                         Client.ToggleTimer();
                     }
                     break;
+
+                default:
+                    {
+                        ShowHelpScreen();
+                    }
+                    break;
             }
+        }
+
+        private void ShowHelpScreen()
+        {
+            _helpTimer?.Dispose();
+
+            HelpGrid.Visibility = Visibility.Visible;
+
+            _helpTimer = new Timer(5000);
+            _helpTimer.Elapsed += delegate (object sender, ElapsedEventArgs args)
+            {
+                this.Dispatcher.Invoke(delegate ()
+                {
+                    HelpGrid.Visibility = Visibility.Hidden;
+                });
+            };
+            _helpTimer.Start();
         }
     }
 }
