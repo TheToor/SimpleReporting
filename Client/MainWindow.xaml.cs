@@ -106,6 +106,12 @@ namespace Reporting.Client
                     }
                     break;
 
+                case Key.F5:
+                    {
+                        Client.GetBrowserWrapper().RefreshCurrentTab();
+                    }
+                    break;
+
                 default:
                     {
                         ShowHelpScreen();

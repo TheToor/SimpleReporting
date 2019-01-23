@@ -93,6 +93,16 @@ namespace Reporting.Client
             });
         }
 
+        internal void RefreshCurrentTab()
+        {
+            try
+            {
+                var currentBrowser = _browsers.ElementAt(_currentTab).Value;
+                currentBrowser.Reload(true);
+            }
+            catch(Exception) { }
+        }
+
         internal void SetTab(int id)
         {
             if (_browsers.Count <= 1)
