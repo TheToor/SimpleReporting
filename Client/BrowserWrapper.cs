@@ -13,6 +13,7 @@ namespace Reporting.Client
     {
         private MainWindow _form;
 
+        private object _browserLock = new object();
         private int _browserCounter;
         private int _currentTab;
         private Dictionary<int, ChromiumWebBrowser> _browsers = new Dictionary<int, ChromiumWebBrowser>();
@@ -50,29 +51,29 @@ namespace Reporting.Client
             browser.IsBrowserInitializedChanged += OnBrowserInitialized;
             browser.LoadingStateChanged += OnBrowserLoadingStateChanged;
 
-            var id = _browserCounter++;
-            browser.Uid = id.ToString();
+            lock (_browserLock)
+            {
+                var id = _browserCounter++;
+                browser.Uid = id.ToString();
 
-            _browsers.Add(id, browser);
-            _browserSettings.Add(id, urlsettings);
+                _browsers.Add(id, browser);
+                _browserSettings.Add(id, urlsettings);
+            }
         }
 
         internal void NextTab()
         {
             if (_browsers.Count <= 1)
                 return;
-            
-            _form.Dispatcher.Invoke(delegate ()
+
+            lock (_browserLock)
             {
-                var currentBrowser = _browsers.ElementAt(_currentTab++);
-                currentBrowser.Value.Visibility = Visibility.Hidden;
+                var tab = _currentTab + 1;
+                if (tab >= _browsers.Count)
+                    tab = 0;
 
-                if (_currentTab >= _browsers.Count)
-                    _currentTab = 0;
-
-                var nextBrowser = _browsers.ElementAt(_currentTab);
-                nextBrowser.Value.Visibility = Visibility.Visible;
-            });
+                SetTab(tab);
+            }
         }
 
         internal void PreviousTab()
@@ -80,17 +81,14 @@ namespace Reporting.Client
             if (_browsers.Count <= 1)
                 return;
 
-            _form.Dispatcher.Invoke(delegate ()
+            lock (_browserLock)
             {
-                var currentBrowser = _browsers.ElementAt(_currentTab--);
-                currentBrowser.Value.Visibility = Visibility.Hidden;
+                var tab = _currentTab - 1;
+                if (tab < 0)
+                    tab = _browsers.Count - 1;
 
-                if (_currentTab < 0)
-                    _currentTab = _browsers.Count - 1;
-
-                var nextBrowser = _browsers.ElementAt(_currentTab);
-                nextBrowser.Value.Visibility = Visibility.Visible;
-            });
+                SetTab(tab);
+            }
         }
 
         internal void RefreshCurrentTab()
@@ -119,8 +117,9 @@ namespace Reporting.Client
                 var currentBrowser = _browsers.ElementAt(_currentTab);
                 currentBrowser.Value.Visibility = Visibility.Hidden;
 
-                var newBrowser = _browsers.ElementAt(id);
-                newBrowser.Value.Visibility = Visibility.Visible;
+                var newBrowser = _browsers.ElementAt(id).Value;
+                newBrowser.Visibility = Visibility.Visible;
+                newBrowser.InvalidateVisual();
                 _currentTab = id;
             });
         }
