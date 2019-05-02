@@ -25,6 +25,8 @@ namespace Reporting.Client.Models
         public int Timeout { get; set; }
         [XmlElement("Delay")]
         public int Delay { get; set; }
+        [XmlElement("CloseAfter")]
+        public int CloseAfter { get; set; }
 
         internal bool Authentificated { get; set; }
     }

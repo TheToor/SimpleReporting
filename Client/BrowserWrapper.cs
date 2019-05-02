@@ -172,6 +172,26 @@ namespace Reporting.Client
                 {
                     browser.Visibility = Visibility.Visible;
                 }
+
+                if(settings.CloseAfter > 0)
+                {
+                    Task.Factory.StartNew(async delegate
+                    {
+                        await Task.Delay(settings.CloseAfter * 1000);
+
+                        if (_currentTab == id)
+                            NextTab();
+
+                        lock (_browserLock)
+                        {
+                            _browserCounter--;
+                            _browsers.Remove(id);
+                            _browserSettings.Remove(id);
+                            _form.RootGrid.Children.Remove(browser);
+                            browser.Dispose();
+                        }
+                    });
+                }
             });
         }
 
