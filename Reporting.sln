@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2042
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32210.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reporting.Client", "Client\Reporting.Client.csproj", "{EB0A6DD6-DCB7-4E44-9D4C-E7EC4AFD982D}"
 EndProject
@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Reporting.Extension.PRTG", 
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Web", "Reporting.Extension.PRTG\Web\", "{5A8D4C7E-1620-4C42-BC7F-4F1BEF19D8C7}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_57150"
 		Debug.AspNetCompiler.PhysicalPath = "Reporting.Extension.PRTG\Web\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_57150\"
