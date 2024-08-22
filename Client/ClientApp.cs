@@ -1,5 +1,4 @@
 ﻿using Reporting.Client.Models;
-using Reporting.Client.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,14 +14,11 @@ namespace Reporting.Client
     {
         private Settings _settings;
 
-        private BrowserWrapper _browserWrapper;
-        private API _api;
+        private readonly BrowserWrapper _browserWrapper;
 
         private Timer _pageSwitchTimer;
 
-        private MainWindow _form;
-
-        private AnnounceService _announceService;
+        private readonly MainWindow _form;
 
         internal enum EXECUTION_STATE : uint
         {
@@ -46,21 +42,10 @@ namespace Reporting.Client
 
             _browserWrapper = new BrowserWrapper(mainWindow, _settings);
 
-            if (!App.DisableAPI)
-            {
-                try
-                {
-                    _api = new API(_settings);
-                }
-                catch(Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
-                    Environment.Exit(0);
-                }
-            }
-
             if (_settings.TopMost)
+            {
                 mainWindow.Topmost = true;
+            }
 
             if (_settings.PageSwitchTime > 0)
             {
@@ -68,13 +53,12 @@ namespace Reporting.Client
                 _pageSwitchTimer.Start();
             }
 
-            if(_settings.DisableScreenSaver)
+            if (_settings.DisableScreenSaver)
+            {
                 SetThreadExecutionState((uint)(EXECUTION_STATE.ES_CONTINUOUS | EXECUTION_STATE.ES_DISPLAY_REQUIRED | EXECUTION_STATE.ES_SYSTEM_REQUIRED));
+            }
 
             LoadTabs();
-
-            if (!String.IsNullOrEmpty(_settings.AnnounceUrl))
-                _announceService = new AnnounceService(_settings);
         }
 
         private void PageSwitchTimerElapsed(object sender, ElapsedEventArgs e)
