@@ -3,6 +3,7 @@ using CefSharp.Wpf;
 using Reporting.Client.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -42,6 +43,12 @@ namespace Reporting.Client
             else
             {
                 cefSettings.CefCommandLineArgs.Add("proxy-server", $"{settings.Proxy.ProxyUrl}:{settings.Proxy.ProxyPort}");
+            }
+
+            cefSettings.RootCachePath = Path.Combine(Environment.GetEnvironmentVariable("Temp"), "MonitoringClient");
+            if(!Directory.Exists(cefSettings.RootCachePath))
+            {
+                Directory.CreateDirectory(cefSettings.RootCachePath);
             }
             
             Cef.Initialize(cefSettings);
@@ -177,6 +184,11 @@ namespace Reporting.Client
                     _browserSync.Wait();
 
                     var id = Convert.ToInt32(browser.Uid);
+                    if (!_browserSettings.ContainsKey(id))
+                    {
+                        return;
+                    }
+
                     var settings = _browserSettings[id];
 
                     if (settings.RequiresLogin && !settings.Authentificated)
@@ -222,16 +234,25 @@ namespace Reporting.Client
                         {
                             await Task.Delay(settings.CloseAfter * 1000);
 
-                            if (_currentTab == id)
+                            try
                             {
-                                NextTab();
-                            }
+                                await _browserSync.WaitAsync();
 
-                            _browserCounter--;
-                            _browsers.Remove(id);
-                            _browserSettings.Remove(id);
-                            _form.RootGrid.Children.Remove(browser);
-                            browser.Dispose();
+                                if (_currentTab == id)
+                                {
+                                    NextTab();
+                                }
+
+                                _browserCounter--;
+                                _browsers.Remove(id);
+                                _browserSettings.Remove(id);
+                                _form.RootGrid.Children.Remove(browser);
+                                browser.Dispose();
+                            }
+                            finally
+                            {
+                                _browserSync.Release();
+                            }
                         });
                     }
                 }
