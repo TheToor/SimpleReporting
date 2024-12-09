@@ -21,9 +21,9 @@ namespace Reporting.Client
         private readonly Dictionary<int, ChromiumWebBrowser> _browsers = new Dictionary<int, ChromiumWebBrowser>();
         private readonly Dictionary<int, UrlSettings> _browserSettings = new Dictionary<int, UrlSettings>();
 
-        internal BrowserWrapper(MainWindow mainform, Settings settings)
+        internal BrowserWrapper(MainWindow mainForm, Settings settings)
         {
-            _form = mainform;
+            _form = mainForm;
 
             var cefSettings = new CefSettings();
 
@@ -46,6 +46,7 @@ namespace Reporting.Client
             }
 
             cefSettings.RootCachePath = Path.Combine(Environment.GetEnvironmentVariable("Temp"), "MonitoringClient");
+            cefSettings.CachePath = Path.Combine(cefSettings.RootCachePath, "Cache");
             if(!Directory.Exists(cefSettings.RootCachePath))
             {
                 Directory.CreateDirectory(cefSettings.RootCachePath);
@@ -54,7 +55,7 @@ namespace Reporting.Client
             Cef.Initialize(cefSettings);
         }
 
-        internal void CreateTab(UrlSettings urlsettings)
+        internal void CreateTab(UrlSettings urlSettings)
         {
             try
             { 
@@ -73,7 +74,7 @@ namespace Reporting.Client
                 browser.Uid = id.ToString();
 
                 _browsers.Add(id, browser);
-                _browserSettings.Add(id, urlsettings);
+                _browserSettings.Add(id, urlSettings);
             }
             finally
             {
@@ -119,7 +120,9 @@ namespace Reporting.Client
 
                 var tab = _currentTab - 1;
                 if (tab < 0)
+                {
                     tab = _browsers.Count - 1;
+                }
 
                 SetTab(tab);
             }
@@ -136,7 +139,10 @@ namespace Reporting.Client
                 var currentBrowser = _browsers.ElementAt(_currentTab).Value;
                 currentBrowser.Reload(true);
             }
-            catch(Exception) { }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
 
         internal void SetTab(int id)
@@ -156,7 +162,7 @@ namespace Reporting.Client
                 return;
             }
 
-            _form.Dispatcher.Invoke(delegate ()
+            _form.Dispatcher.Invoke(() =>
             {
                 var currentBrowser = _browsers.ElementAt(_currentTab);
                 currentBrowser.Value.Visibility = Visibility.Hidden;
@@ -177,19 +183,17 @@ namespace Reporting.Client
             }
 
             //This comes from a different thread so we need to switch to the main thread to work with the browser element
-            _form.Dispatcher.Invoke(delegate ()
+            _form.Dispatcher.Invoke(() =>
             {
                 try
                 {
                     _browserSync.Wait();
 
                     var id = Convert.ToInt32(browser.Uid);
-                    if (!_browserSettings.ContainsKey(id))
+                    if (!_browserSettings.TryGetValue(id, out var settings))
                     {
                         return;
                     }
-
-                    var settings = _browserSettings[id];
 
                     if (settings.RequiresLogin && !settings.Authentificated)
                     {
@@ -197,7 +201,9 @@ namespace Reporting.Client
                         Task.Factory.StartNew(async delegate
                         {
                             if (settings.Timeout > 0)
+                            {
                                 await Task.Delay(settings.Timeout * 1000);
+                            }
 
                             var usernameSelector = settings.UsernameElement.StartsWith("#")
                                 ? $"var loginInput = document.getElementById(\"{settings.UsernameElement.Replace("#", "")}\");"
@@ -232,27 +238,30 @@ namespace Reporting.Client
                     {
                         Task.Factory.StartNew(async delegate
                         {
-                            await Task.Delay(settings.CloseAfter * 1000);
+                            await Task.Delay(settings.CloseAfter * 1000).ConfigureAwait(false);
 
-                            try
+                            await _form.Dispatcher.Invoke(async () =>
                             {
-                                await _browserSync.WaitAsync();
-
-                                if (_currentTab == id)
+                                try
                                 {
-                                    NextTab();
-                                }
+                                    await _browserSync.WaitAsync();
 
-                                _browserCounter--;
-                                _browsers.Remove(id);
-                                _browserSettings.Remove(id);
-                                _form.RootGrid.Children.Remove(browser);
-                                browser.Dispose();
-                            }
-                            finally
-                            {
-                                _browserSync.Release();
-                            }
+                                    if (_currentTab == id)
+                                    {
+                                        NextTab();
+                                    }
+
+                                    _browserCounter--;
+                                    _browsers.Remove(id);
+                                    _browserSettings.Remove(id);
+                                    _form.RootGrid.Children.Remove(browser);
+                                    browser.Dispose();
+                                }
+                                finally
+                                {
+                                    _browserSync.Release();
+                                }
+                            });
                         });
                     }
                 }
@@ -265,25 +274,37 @@ namespace Reporting.Client
 
         private async void OnBrowserInitialized(object sender, DependencyPropertyChangedEventArgs e)
         {
-            try
+            await Task.Factory.StartNew(async () =>
             {
-                await _browserSync.WaitAsync();
-
-                var browser = (ChromiumWebBrowser)sender;
-                var id = Convert.ToInt32(browser.Uid);
-                var settings = _browserSettings[id];
-
-                if (settings.Delay > 0)
+                try
                 {
-                    await Task.Delay(settings.Delay * 1000);
-                }
+                    await _browserSync.WaitAsync().ConfigureAwait(false);
 
-                browser.Load(settings.Url);
-            }
-            finally
-            {
-                _browserSync.Release();
-            }
+                    await _form.Dispatcher.Invoke(async () =>
+                    {
+                        var browser = (ChromiumWebBrowser)sender;
+                        var id = Convert.ToInt32(browser.Uid);
+                        var settings = _browserSettings[id];
+
+                        if (settings.Delay > 0)
+                        {
+                            Task.Factory.StartNew(async delegate
+                            {
+                                await Task.Delay(settings.Delay * 1000).ConfigureAwait(false);
+                                _form.Dispatcher.Invoke(() => { browser.Load(settings.Url); });
+                            });
+                        }
+                        else
+                        {
+                            browser.Load(settings.Url);
+                        }
+                    });
+                }
+                finally
+                {
+                    _browserSync.Release();
+                }
+            }).ConfigureAwait(false);
         }
 
         public void Dispose()
